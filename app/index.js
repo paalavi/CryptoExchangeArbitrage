@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const  path = require('path');
 const http = require('http');
 const helmet = require('helmet');
 const routes = require("./routes/router")
@@ -12,7 +13,7 @@ module.exports =  class Application {
     startServer(){
         const port = process.env.PORT || 3000;
         const server = http.createServer(app);
-        server.listen(process.env.PORT || 3000 ,function () {
+        server.listen(port ,function () {
             console.log(`server is Running n port ${port}`)
         });
     }
@@ -24,9 +25,13 @@ module.exports =  class Application {
         app.use(express.urlencoded({
           extended: false
         }));
+        //set view and static contents
+        app.set('view engine', 'ejs');
+        app.set('views', (path.resolve('resourses/views')));
+        app.use(express.static(path.resolve('public')));
     }
     setRoutes(){
-        app.get('/',(req,res)=>res.json({message : "Hos Galdeniz"}));
+        app.get('/',(req,res)=>res.render('home/home'));
         app.use('/api',routes);
     }
 }
